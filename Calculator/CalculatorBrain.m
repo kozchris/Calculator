@@ -43,6 +43,9 @@
     return  [operandObject doubleValue];
 }
 
+///
+///handles all brain operations
+///
 - (double)performOperation:(NSString *)operation
 {
     double result = 0;
