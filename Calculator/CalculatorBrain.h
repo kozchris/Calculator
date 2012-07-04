@@ -14,6 +14,6 @@
 
 - (double)performOperation:(NSString *)operation;
 
-//complete clear the Calculator brain of data and state information
+//completely clear the Calculator brain of data and state information
 - (void)clear;
 @end
