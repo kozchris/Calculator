@@ -66,21 +66,28 @@
     else if([operation isEqualToString:@"/"])
     {
         double divisor = [self popOperand];
-        if (divisor) result = [self popOperand] / divisor;
+        if (divisor) 
+        {
+            result = [self popOperand] / divisor;
+        }
     }
     else if([operation isEqualToString:@"sin"])
     {
-        result = sin([self popOperand]);
+        double divisor = [self popOperand];
+        if (divisor)
+        {
+            result = sin(M_PI/180 * divisor);   
+        }
     }
     else if([operation isEqualToString:@"cos"])
     {
-        result = cos([self popOperand]);
+        result = cos([self popOperand] * M_PI/180);
     }
-    else if([operation isEqualToString:@"sqrt"])
+    else if([operation isEqualToString:@"√"])
     {
         result = sqrt([self popOperand]);
     }
-    else if([operation isEqualToString:@"pi"])
+    else if([operation isEqualToString:@"π"])
     {
         [self pushOperand:M_PI];
         
