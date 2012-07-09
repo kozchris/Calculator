@@ -7,6 +7,8 @@
 //
 
 #import "CalculatorBrain.h"
+
+///private class to store information about brain operators
 @interface BrainOperator : NSObject
 
 typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enumOperatorType; 
@@ -14,12 +16,23 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
 @property enumOperatorType operatorType;
 @property int operandCount;
 
+//the precedence of the operation
+//0 - variables, functions, constants, +, -
+//1 - *, /
+//2 - +/-
+@property int resultPrecedence;
+
 + (BrainOperator*) initWithName:(NSString*)p_name
                    operatorType: (enumOperatorType)p_type;
 
 + (BrainOperator*) initWithName:(NSString*)p_name
                    operatorType: (enumOperatorType)p_type
                    operandCount:(int)p_operandCount;
+
++ (BrainOperator*) initWithName:(NSString*)p_name
+                   operatorType: (enumOperatorType)p_type
+                   operandCount:(int)p_operandCount
+              resultPrecendence:(int)p_resultPrecedence;
 
 -(NSString*) description;
 
@@ -29,6 +42,7 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
 @synthesize operatorName = _operatorName;
 @synthesize operatorType = _operatorType;
 @synthesize operandCount = _operandCount;
+@synthesize resultPrecedence = _resultPrecedence;
 
 + (BrainOperator*) initWithName:(NSString*)p_name
                    operatorType: (enumOperatorType)p_operatorType
@@ -40,11 +54,20 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
                    operatorType: (enumOperatorType)p_operatorType
                    operandCount:(int)p_operandCount
 {
+    return [BrainOperator initWithName:p_name operatorType:p_operatorType operandCount:p_operandCount resultPrecendence:0];
+}
+
++ (BrainOperator*) initWithName:(NSString*)p_name
+                   operatorType: (enumOperatorType)p_operatorType
+                   operandCount:(int)p_operandCount
+              resultPrecendence:(int)p_resultPrecendence
+{
     BrainOperator *result;
     result = [[BrainOperator alloc] init];
     result.operatorName = p_name;
     result.operatorType = p_operatorType;
     result.operandCount = p_operandCount;
+    result.resultPrecedence = p_resultPrecendence;
     
     return result;
 }
@@ -52,7 +75,7 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
 
 -(NSString*) description
 {
-    return [NSString stringWithFormat:@"Name=%@, Type=%d, operandCount=%d", self.operatorName, self.operatorType, self.operandCount];
+    return [NSString stringWithFormat:@"Name=%@, Type=%d, operandCount=%d, precendence=%d", self.operatorName, self.operatorType, self.operandCount, self.resultPrecedence];
 }
 
 @end
@@ -79,13 +102,15 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
                                        operandCount:2 ], @"+",
                         [BrainOperator initWithName:@"*" 
                                        operatorType:kOperator 
-                                       operandCount:2 ], @"*",
+                                       operandCount:2 
+                                  resultPrecendence:1 ], @"*",
                         [BrainOperator initWithName:@"-" 
                                        operatorType:kOperator 
                                        operandCount:2 ], @"-",
                         [BrainOperator initWithName:@"/" 
                                        operatorType:kOperator 
-                                       operandCount:2 ], @"/",
+                                       operandCount:2 
+                                  resultPrecendence:1], @"/",
                         [BrainOperator initWithName:@"sin" 
                                        operatorType:kFunction 
                                        operandCount:1 ], @"sin",
@@ -99,7 +124,8 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
                                        operatorType:kConstant ], @"π",
                         [BrainOperator initWithName:@"+/-" 
                                        operatorType:kOperator 
-                                       operandCount:1 ], @"+/-",
+                                       operandCount:1
+                                  resultPrecendence:2], @"+/-",
                         [BrainOperator initWithName:@"x" 
                                        operatorType:kVariable ], @"x",
                         [BrainOperator initWithName:@"a" 
@@ -214,7 +240,8 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     return [CalculatorBrain runProgram:self.program usingVariableValues:variableValues];
 }
 
-+ (NSString *) getDescriptionOfOperation:(NSMutableArray *)stack 
++ (NSString *) getDescriptionOfOperation:(NSMutableArray *)stack
+                             precendence:(int)p_precendence
 {
     NSString *result = @"unrecognized operation";
     id topOfStack = [stack lastObject];
@@ -231,24 +258,28 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
         if (operator.operatorType!=kVariable)
         { 
             if (operator.operatorType==kOperator)
-            {
-                
+            {                
                 if (operator.operandCount==2)
-                {
-                    
-                    NSString *lastOperation = [self getDescriptionOfOperation:stack];
+                {                    
+                    NSString *lastOperation = [self getDescriptionOfOperation:stack precendence:operator.resultPrecedence];
                     //*, /, +, -
-                    result = [NSString stringWithFormat:@"(%@ %@ %@)", [self getDescriptionOfOperation:stack], operator.operatorName, lastOperation ];
+                    result = [NSString stringWithFormat:@"%@ %@ %@", [self getDescriptionOfOperation:stack precendence:operator.resultPrecedence], operator.operatorName, lastOperation ];
                 }
                 else {
                     //+/-
-                    result = [NSString stringWithFormat:@"%@ %@)", operator.operatorName, [self getDescriptionOfOperation:stack]];
+                    result = [NSString stringWithFormat:@"%@ %@", operator.operatorName, [self getDescriptionOfOperation:stack precendence:operator.resultPrecedence]];
                     
-                }               
+                }
+                
+                if(p_precendence>operator.resultPrecedence)
+                {
+                    //add parens
+                    result = [NSString stringWithFormat:@"(%@)", result];
+                }
             }
             else if (operator.operatorType==kFunction)
             {                
-                result = [NSString stringWithFormat:@"%@(%@)", operator.operatorName, [self getDescriptionOfOperation:stack]];
+                result = [NSString stringWithFormat:@"%@(%@)", operator.operatorName, [self getDescriptionOfOperation:stack precendence:operator.resultPrecedence]];
             }
             else if (operator.operatorType==kConstant)
             {
@@ -277,7 +308,7 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
             {
                 result = [NSString stringWithFormat:@", %@", result];    
             }
-            result = [NSString stringWithFormat:@"%@%@", [self getDescriptionOfOperation:stack], result];
+            result = [NSString stringWithFormat:@"%@%@", [self getDescriptionOfOperation:stack precendence:0], result];
         }
     }
     return result;
