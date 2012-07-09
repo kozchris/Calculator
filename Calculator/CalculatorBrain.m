@@ -240,6 +240,10 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     return [CalculatorBrain runProgram:self.program usingVariableValues:variableValues];
 }
 
+
+///
+/// returns a textual description of the program stack
+///
 + (NSString *) getDescriptionOfOperation:(NSMutableArray *)stack
                              precendence:(int)p_precendence
 {
