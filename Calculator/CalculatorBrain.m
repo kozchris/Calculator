@@ -180,7 +180,10 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
 
 - (void)pushOperand:(double)operand
 {
-    NSNumber *operandObject = [NSNumber numberWithDouble:operand];
+    //To get the correct precision we need to use NSDecimalNumber and also need to use the
+    //decimalNumberWithString method. Using any of the NSNumber methods to convert directly 
+    //from double to decimal will also introduce precision errors
+    NSDecimalNumber *operandObject = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%g", operand]];
     [self.programStack addObject:operandObject];
 }
 
@@ -251,9 +254,12 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     id topOfStack = [stack lastObject];
     if (topOfStack) [stack removeLastObject];
     
-    if([topOfStack isKindOfClass:[NSNumber class]])
+    if([topOfStack isKindOfClass:[NSDecimalNumber class]])
     {
-        result = [topOfStack description];
+        //result = [NSString stringWithFormat:@"%g", [(NSDecimalNumber*)topOfStack doubleValue]];
+        //the below result was returning an invalid value for 9.3 for some reason
+        //for some reason the description method was return 9.3 as 9.3000000000000001
+        result = [(NSDecimalNumber*)topOfStack description];
     }
     else if ([topOfStack isKindOfClass:[NSString class]])
     {
@@ -326,7 +332,7 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     id topOfStack = [stack lastObject];
     if (topOfStack) [stack removeLastObject];
     
-    if([topOfStack isKindOfClass:[NSNumber class]])
+    if([topOfStack isKindOfClass:[NSDecimalNumber class]])
     {
         result = [topOfStack doubleValue];
     }
@@ -383,7 +389,7 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
         }
         else if ([self isVariable:operation])
         {
-            NSNumber *variableValue = [variableValues objectForKey:operation];
+            NSDecimalNumber *variableValue = [variableValues objectForKey:operation];
             if (variableValue) 
             {
                 result = [variableValue doubleValue];

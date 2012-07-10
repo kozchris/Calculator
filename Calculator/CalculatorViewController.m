@@ -183,9 +183,9 @@
     if ([sender.currentTitle isEqualToString:@"Test 1"])
     {
         self.testVariableValues = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSNumber numberWithDouble:5], @"x",
-                                   [NSNumber numberWithDouble:4.8], @"a",
-                                   [NSNumber numberWithDouble:3], @"b",
+                                   [NSDecimalNumber numberWithDouble:5], @"x",
+                                   [NSDecimalNumber numberWithDouble:4.8], @"a",
+                                   [NSDecimalNumber numberWithDouble:3], @"b",
                                    nil];
     }
     else if ([sender.currentTitle isEqualToString:@"Test 2"])
@@ -195,8 +195,8 @@
     else if ([sender.currentTitle isEqualToString:@"Test 3"])
     {
         self.testVariableValues = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSNumber numberWithDouble:5], @"x",
-                                   [NSNumber numberWithDouble:3], @"b",
+                                   [NSDecimalNumber numberWithDouble:5], @"x",
+                                   [NSDecimalNumber numberWithDouble:3], @"b",
                                    nil];
     }
     
@@ -208,9 +208,9 @@
         {
             NSString *value = @"nil";
             id keyValue = [self.testVariableValues objectForKey:key];
-            if ([keyValue isKindOfClass:[NSNumber class]])
+            if ([keyValue isKindOfClass:[NSDecimalNumber class]])
             {
-                value = [(NSNumber*)keyValue description];
+                value = [(NSDecimalNumber*)keyValue description];
             }
             self.variableDisplay.text = [NSString stringWithFormat:@"%@%@ = %@  ", self.variableDisplay.text, key, value];
         }
