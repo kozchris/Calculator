@@ -256,9 +256,6 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     
     if([topOfStack isKindOfClass:[NSDecimalNumber class]])
     {
-        //result = [NSString stringWithFormat:@"%g", [(NSDecimalNumber*)topOfStack doubleValue]];
-        //the below result was returning an invalid value for 9.3 for some reason
-        //for some reason the description method was return 9.3 as 9.3000000000000001
         result = [(NSDecimalNumber*)topOfStack description];
     }
     else if ([topOfStack isKindOfClass:[NSString class]])
