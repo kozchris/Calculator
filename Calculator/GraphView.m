@@ -9,9 +9,7 @@
 #import "GraphView.h"
 #import "AxesDrawer.h"
 
-@interface GraphView ()
-@property (nonatomic) CGPoint origin;
-@property (nonatomic) CGFloat scale;
+@interface GraphView()
 @end
 
 @implementation GraphView
@@ -59,7 +57,7 @@
     if (_scale != scale && scale<=100)
     {
         _scale = scale;
-        
+                
         //redraw
         [self setNeedsDisplay];
     }
@@ -129,6 +127,7 @@
     return self;
 }
 
+//Text drawing method based on method from AxesDrawer
 + (void)drawString:(NSString *)text atPoint:(CGPoint)location withAnchor:(int)anchor
 {
 	if ([text length])
@@ -160,30 +159,17 @@
     //draw scale
     [AxesDrawer drawAxesInRect:rect originAtPoint:self.origin scale:self.scale];
     
-    //NSLog(@"gv call getProgramDescription: %@", self.dataSource);
-    
-    
-    //draw function
-    #define MIN_PIXELS_PER_HASHMARK 25
-    int unitsPerHashmark = MIN_PIXELS_PER_HASHMARK * 2 / self.scale;
-	if (!unitsPerHashmark) unitsPerHashmark = 1;
-	CGFloat pixelsPerHashmark = self.scale * unitsPerHashmark;
-    
-    
-    NSLog(@"%g", self.scale);
-    
+    //draw function    
     CGContextBeginPath(context);
     BOOL initialPointSet = NO;    
     for(int x=0; x<rect.size.width; x++)
     {
         CGFloat y = [self.dataSource getYforX:((x-self.origin.x)/self.scale)];
-        NSLog(@"gv call getYforX %g returned %g", ((x-self.origin.x)/self.scale), y);
+        //NSLog(@"gv call getYforX %g returned %g", ((x-self.origin.x)/self.scale), y);
               
         CGPoint nextPoint;
         nextPoint.x  = x;
         nextPoint.y = self.origin.y - y*self.scale;
-        
-        NSLog(@"gv nextPoint x:%g y:%g ", nextPoint.x, nextPoint.y);
         
         if(initialPointSet==YES)
         {
@@ -193,9 +179,12 @@
         CGContextMoveToPoint(context, nextPoint.x, nextPoint.y);
         initialPointSet = YES;
     }
+    
+    //draw function in blue
     [[UIColor blueColor] setStroke];
     CGContextStrokePath(context);
     
+    //reset draw color to black
     [[UIColor blackColor] setStroke];
     
     //draw program description

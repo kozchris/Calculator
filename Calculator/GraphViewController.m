@@ -50,4 +50,48 @@
     return YES;
 }
 
+-(void)viewDidLoad
+{
+    if( [self.view isKindOfClass:[GraphView class]])
+    {
+        GraphView *graphView = (GraphView*)self.view;
+        //save state
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults objectForKey:@"scale"]!=nil)
+        {
+            graphView.scale = [defaults floatForKey:@"scale"];
+        }
+        
+        if ([defaults objectForKey:@"origin.x"] != nil)
+        {
+            CGPoint origin;        
+            origin.x = [defaults floatForKey:@"origin.x"];
+            origin.y = [defaults floatForKey:@"origin.y"];
+            graphView.origin = origin;
+        }
+    }
+    
+    [super viewDidLoad];
+}
+
+-(void) viewWillDisappear:(BOOL)animated
+{
+    NSLog(@"viewWillDisappear");
+    
+    if( [self.view isKindOfClass:[GraphView class]])
+    {
+        GraphView *graphView = (GraphView*)self.view;
+        //save state
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setFloat:graphView.scale forKey:@"scale"];
+        
+        [defaults setFloat:graphView.origin.x forKey:@"origin.x"];
+        [defaults setFloat:graphView.origin.y forKey:@"origin.y"];
+        
+        [defaults synchronize];
+    }
+    
+    [super viewWillDisappear:animated];
+}
+
 @end
