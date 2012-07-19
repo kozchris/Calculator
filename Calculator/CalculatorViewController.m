@@ -226,6 +226,29 @@
     }
 }
 
+- (IBAction)Graph:(UIButton *)sender {
+    if (self.splitViewController!=nil)
+    {
+        //detail view is always in position 1, master in position 0
+        if( [[self.splitViewController.viewControllers lastObject] isKindOfClass: [GraphViewController class]])
+        {
+            GraphViewController *graphViewController = [self.splitViewController.viewControllers lastObject];
+            graphViewController.program = self.brain.program;
+            
+        }
+    }
+}
+
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    if (self.splitViewController)
+        // on the iPad, we support all orientations
+        return YES; 
+    else
+        // but no landscape on the iPhone, because I'm too lazy to fix the keypad
+        return UIInterfaceOrientationIsPortrait(toInterfaceOrientation);
+}
+
 - (void)viewDidUnload 
 {
     [self setHistoryDisplay:nil];

@@ -18,6 +18,17 @@
 
 @synthesize program = _program;
 @synthesize graphView = _graphView;
+@synthesize masterPopoverController = _masterPopoverController;
+@synthesize toolbar = _toolbar;
+
+-(void) setProgram:(id)program
+{
+    if (_program != program)
+    {
+        [self.graphView setNeedsDisplay];
+        _program = program;
+    }
+}
 
 -(void)setGraphView:(GraphView *)graphView
 {
@@ -50,6 +61,13 @@
     return YES;
 }
 
+-(void) awakeFromNib
+{
+    self.splitViewController.delegate = self;
+    
+    [super awakeFromNib];
+}
+
 -(void)viewDidLoad
 {
     if( [self.view isKindOfClass:[GraphView class]])
@@ -69,6 +87,8 @@
             origin.y = [defaults floatForKey:@"origin.y"];
             graphView.origin = origin;
         }
+        
+        self.masterPopoverController = [[UIPopoverController alloc] initWithContentViewController:[self.splitViewController.viewControllers objectAtIndex:0]];
     }
     
     [super viewDidLoad];
@@ -94,4 +114,35 @@
     [super viewWillDisappear:animated];
 }
 
+- (void)splitViewController:(UISplitViewController *)svc 
+     willHideViewController:(UIViewController *)aViewController 
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem 
+       forPopoverController:(UIPopoverController *)pc
+{
+    barButtonItem.title = @"Calculator";
+    NSMutableArray *toolbarItems = [self.toolbar.items mutableCopy];
+    [toolbarItems insertObject:barButtonItem atIndex:0];
+    self.toolbar.items = toolbarItems;
+    
+    //pc.popoverArrowDirection = UIPopoverArrowDirectionDown;
+    self.masterPopoverController = pc;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc 
+     willShowViewController:(UIViewController *)aViewController 
+        invalidatingBarButtonItem:(UIBarButtonItem *)button
+{
+    NSMutableArray *toolbarItems = [self.toolbar.items mutableCopy];
+    [toolbarItems removeObject:button];
+    self.toolbar.items = toolbarItems;
+    self.masterPopoverController = nil;
+}
+
+- (void)viewDidUnload {
+    [self setToolbar:nil];
+    [self setToolbar:nil];
+    [self setToolbar:nil];
+    [self setToolbar:nil];
+    [super viewDidUnload];
+}
 @end
