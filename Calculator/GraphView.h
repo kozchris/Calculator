@@ -10,10 +10,13 @@
 
 @class GraphView;
 
+typedef enum enumDrawingMode { kLine, kDot } enumDrawingMode; 
+
 @protocol GraphViewDataSource <NSObject>
 -(NSString*)getProgramDescription:(GraphView*) sender withProgramNumber:(int) programNumber;
 -(float)getYforX:(float) x withProgramNumber:(int) programNumber;
 -(int)getProgramCount;
+-(enumDrawingMode)getDrawingMode;
 @end
 
 @interface GraphView : UIView
@@ -24,5 +27,7 @@
 @property (nonatomic) NSString * programDescription;
 
 @property (nonatomic,weak) IBOutlet id <GraphViewDataSource> dataSource;
+
+
 
 @end

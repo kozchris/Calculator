@@ -20,6 +20,7 @@
 @synthesize graphView = _graphView;
 @synthesize masterPopoverController = _masterPopoverController;
 @synthesize toolbar = _toolbar;
+@synthesize drawingModeSwitch = _drawingModeSwitch;
 
 -(void) setPrograms:(NSArray *)programs
 {
@@ -50,6 +51,21 @@
 {
     NSDictionary *vars = [NSDictionary dictionaryWithObjectsAndKeys:[NSDecimalNumber numberWithFloat:x], @"x", nil]; 
     return [CalculatorBrain runProgram:[self.programs objectAtIndex:programNumber] usingVariableValues:vars];
+}
+
+-(enumDrawingMode)getDrawingMode
+{    
+    if(!self.drawingModeSwitch.isOn )
+    {
+        return (enumDrawingMode)kDot;
+    }
+    else {
+        return (enumDrawingMode)kLine;
+    }
+}
+
+- (IBAction)DrawingModeChanged:(UISwitch *)sender {
+    [self.graphView setNeedsDisplay];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -97,6 +113,7 @@
         {
             self.masterPopoverController = [[UIPopoverController alloc] initWithContentViewController:[self.splitViewController.viewControllers objectAtIndex:0]];
         }
+        
     }
     
     [super viewDidLoad];
@@ -149,6 +166,7 @@
     [self setToolbar:nil];
     [self setToolbar:nil];
     [self setToolbar:nil];
+    [self setDrawingModeSwitch:nil];
     [super viewDidUnload];
 }
 @end

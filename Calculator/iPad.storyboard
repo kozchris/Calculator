@@ -23,6 +23,40 @@
                             <view contentMode="scaleToFill" id="KG1-7z-BEe" customClass="GraphView">
                                 <rect key="frame" x="0.0" y="44" width="768" height="960"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="UuT-5j-Kcf">
+                                        <rect key="frame" x="114" y="913" width="79" height="27"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <mutableAttributedString key="userComments">
+                                            <!--Dot-->
+                                            <mutableData key="keyedArchiveRepresentation">
+YnBsaXN0MDDUAQIDBAUGREVYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCA8T
+GiQlJiwwODk8P1UkbnVsbNMJCgsMDQ5cTlNBdHRyaWJ1dGVzViRjbGFzc1hOU1N0cmluZ4AEgA2AAtIK
+EBESWU5TLnN0cmluZ4ADU0RvdNIUFRYXWiRjbGFzc25hbWVYJGNsYXNzZXNfEA9OU011dGFibGVTdHJp
+bmejFhgZWE5TU3RyaW5nWE5TT2JqZWN00wobHB0eIVdOUy5rZXlzWk5TLm9iamVjdHOADKIfIIAFgAai
+IiOAB4AJXxAQTlNQYXJhZ3JhcGhTdHlsZVZOU0ZvbnTTJwooKSorWk5TVGFiU3RvcHNbTlNBbGlnbm1l
+bnSAAIAIEATSFBUtLl8QEE5TUGFyYWdyYXBoU3R5bGWiLxlfEBBOU1BhcmFncmFwaFN0eWxl1AoxMjM0
+NTY3Vk5TTmFtZVZOU1NpemVYTlNmRmxhZ3OAC4AKI0AoAAAAAAAAEBBZSGVsdmV0aWNh0hQVOjtWTlNG
+b250ojoZ0hQVPT5cTlNEaWN0aW9uYXJ5oj0Z0hQVQEFfEBlOU011dGFibGVBdHRyaWJ1dGVkU3RyaW5n
+o0JDGV8QGU5TTXV0YWJsZUF0dHJpYnV0ZWRTdHJpbmdfEBJOU0F0dHJpYnV0ZWRTdHJpbmdfEA9OU0tl
+eWVkQXJjaGl2ZXLRRkdUcm9vdIABAAgAEQAaACMALQAyADcARgBMAFMAYABnAHAAcgB0AHYAewCFAIcA
+iwCQAJsApAC2ALoAwwDMANMA2wDmAOgA6wDtAO8A8gD0APYBCQEQARcBIgEuATABMgE0ATkBTAFPAWIB
+awFyAXkBggGEAYYBjwGRAZsBoAGnAaoBrwG8Ab8BxAHgAeQCAAIVAicCKgIvAAAAAAAAAgEAAAAAAAAA
+SAAAAAAAAAAAAAAAAAAAAjE
+</mutableData>
+                                        </mutableAttributedString>
+                                        <connections>
+                                            <action selector="DrawingModeChanged:" destination="maF-ON-m0E" eventType="valueChanged" id="23V-Qp-DWQ"/>
+                                        </connections>
+                                    </switch>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Line Mode:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="RT3-zo-1pa">
+                                        <rect key="frame" x="20" y="913" width="86" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
@@ -31,6 +65,7 @@
                     <toolbarItems/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="drawingModeSwitch" destination="UuT-5j-Kcf" id="Eqh-B1-Vpp"/>
                         <outlet property="graphView" destination="KG1-7z-BEe" id="ucx-NA-AcA"/>
                         <outlet property="toolbar" destination="a6L-P6-kBO" id="9pG-1L-x2h"/>
                     </connections>
@@ -502,32 +537,6 @@
             <point key="canvasLocation" x="428" y="-1801"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CalculatorViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CalculatorViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="display" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="historyDisplay" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="variableDisplay" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="DetailView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetailView.h"/>
-        </class>
-        <class className="GraphView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GraphView.h"/>
-            <relationships>
-                <relationship kind="outlet" name="dataSource"/>
-            </relationships>
-        </class>
-        <class className="GraphViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GraphViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="graphView" candidateClass="GraphView"/>
-                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

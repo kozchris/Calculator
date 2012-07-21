@@ -13,5 +13,6 @@
 @property (nonatomic, strong) NSArray *programs;
 @property (nonatomic, strong) UIPopoverController *masterPopoverController;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UISwitch *drawingModeSwitch;
 
 @end

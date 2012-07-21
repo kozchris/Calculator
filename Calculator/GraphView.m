@@ -174,7 +174,7 @@
         textRect.origin.x = location.x;
 		textRect.origin.y = location.y + (textRect.size.height + VERTICAL_TEXT_MARGIN) * lineNumber ;
 		
-        [[self getColorForProgramNumber:lineNumber] setFill];
+        //[[self getColorForProgramNumber:lineNumber] setFill];
         
 		[text drawInRect:textRect withFont:font];
         
@@ -189,11 +189,18 @@
     
     //draw scale
     [AxesDrawer drawAxesInRect:rect originAtPoint:self.origin scale:self.scale];
+
     
     //draw function    
     for (int programNumber=0; programNumber < [self.dataSource getProgramCount]; programNumber++)
     {
         CGContextBeginPath(context);
+        
+        //set function line color
+        [[GraphView getColorForProgramNumber:programNumber] setStroke];
+        //and fill color
+        [[GraphView getColorForProgramNumber:programNumber] setFill];
+        
         BOOL initialPointSet = NO;    
         for(int x=0; x<rect.size.width; x++)
         {
@@ -204,17 +211,21 @@
             nextPoint.x  = x;
             nextPoint.y = self.origin.y - y*self.scale;
             
-            if(initialPointSet==YES)
+            if ([self.dataSource getDrawingMode]==(enumDrawingMode)kLine)
             {
-                CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+                if(initialPointSet==YES)
+                {
+                    CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+                }
+                
+                CGContextMoveToPoint(context, nextPoint.x, nextPoint.y);
+                initialPointSet = YES;
             }
-            
-            CGContextMoveToPoint(context, nextPoint.x, nextPoint.y);
-            initialPointSet = YES;
+            else 
+            {                
+                CGContextFillRect(context, CGRectMake(nextPoint.x,nextPoint.y,1/self.contentScaleFactor,1/self.contentScaleFactor));
+            }
         }
-        
-        //set function line color
-        [[GraphView getColorForProgramNumber:programNumber] setStroke];
         
         CGContextStrokePath(context);
         
@@ -228,7 +239,8 @@
         [GraphView drawDescription:programString atPoint:descriptionLocation atlineNumber:programNumber]; 
         
         //reset draw color to black
-        [[UIColor blackColor] setStroke];        
+        [[UIColor blackColor] setStroke];          
+        [[UIColor blackColor] setFill];  
     }
 }
 
