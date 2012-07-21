@@ -16,17 +16,17 @@
 
 @implementation GraphViewController
 
-@synthesize program = _program;
+@synthesize programs = _programs;
 @synthesize graphView = _graphView;
 @synthesize masterPopoverController = _masterPopoverController;
 @synthesize toolbar = _toolbar;
 
--(void) setProgram:(id)program
+-(void) setPrograms:(NSArray *)programs
 {
-    if (_program != program)
+    if (_programs != programs)
     {
         [self.graphView setNeedsDisplay];
-        _program = program;
+        _programs = programs;
     }
 }
 
@@ -36,15 +36,20 @@
     self.graphView.dataSource = self;
 }
 
--(NSString*)getProgramDescription:(GraphView*) sender
+-(NSString*)getProgramDescription:(GraphView*) sender withProgramNumber:(int) programNumber
 {
-    return [CalculatorBrain descriptionOfProgram:self.program];
+    return [CalculatorBrain descriptionOfProgram:[self.programs objectAtIndex:programNumber]];
 }
 
--(float) getYforX:(float)x
+-(int) getProgramCount
+{
+    return self.programs.count;
+}
+
+-(float) getYforX:(float)x withProgramNumber:(int) programNumber
 {
     NSDictionary *vars = [NSDictionary dictionaryWithObjectsAndKeys:[NSDecimalNumber numberWithFloat:x], @"x", nil]; 
-    return [CalculatorBrain runProgram:self.program usingVariableValues:vars];
+    return [CalculatorBrain runProgram:[self.programs objectAtIndex:programNumber] usingVariableValues:vars];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -99,8 +104,6 @@
 
 -(void) viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"viewWillDisappear");
-    
     if( [self.view isKindOfClass:[GraphView class]])
     {
         GraphView *graphView = (GraphView*)self.view;

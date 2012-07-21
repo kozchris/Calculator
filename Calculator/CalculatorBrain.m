@@ -446,4 +446,72 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     return result;
 }
 
++ (NSArray*) popProgramOffStack:(NSMutableArray *) stack 
+{
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    id topOfStack = [stack lastObject];
+    if (topOfStack) 
+    {
+        [stack removeLastObject];        
+    }
+    
+    if ([topOfStack isKindOfClass:[NSString class]])
+    {
+        NSString *operation = topOfStack;
+        BrainOperator *operator = [CalculatorBrain.operationDictionary objectForKey:operation]; 
+        
+        if (operator.operatorType!=kVariable)
+        { 
+            if (operator.operatorType==kOperator)
+            {                
+                if (operator.operandCount==2)
+                {                    
+                    //*, /, +, -
+                    NSArray *currentOp = [self popProgramOffStack:stack];
+                    [result addObjectsFromArray: [self popProgramOffStack:stack]];
+                    [result addObjectsFromArray: currentOp];
+                }
+                else {
+                    //+/-
+                    [result addObjectsFromArray: [self popProgramOffStack:stack]];
+                }
+            }
+            else if (operator.operatorType==kFunction)
+            {       
+                [result addObjectsFromArray: [self popProgramOffStack:stack]];
+            }
+            else if (operator.operatorType==kConstant)
+            {
+                //noop
+            }
+        }
+        else
+        {
+            //noop
+        }    
+    }
+    
+    [result addObject:topOfStack ];
+    
+    return result;
+}
+
+//get array of all programs in brain
++ (NSArray *) getAllPrograms:(id)program
+{
+    NSMutableArray *result;
+    if ([program isKindOfClass:[NSArray class]])
+    {
+        result = [[NSMutableArray alloc] init];
+        NSMutableArray *stack = [program mutableCopy];
+        while([stack lastObject])
+        {
+            [result addObject:[self popProgramOffStack:stack]];
+        }
+    }
+    
+    return [result copy];
+}
+
 @end

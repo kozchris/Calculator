@@ -47,5 +47,7 @@
 //get the description of program suitable for printing
 + (NSString *) descriptionOfProgram:(id)program;
 
+//get array of all programs in brain
++ (NSArray *) getAllPrograms:(id)program;
 
 @end

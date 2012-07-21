@@ -54,10 +54,10 @@
 - (void) setScale:(CGFloat)scale
 {
     //scale of 100 keeps hash at 1 on screen
-    if (_scale != scale && scale<=100)
+    if (_scale != scale && scale<=1000)
     {
         _scale = scale;
-                
+        
         //redraw
         [self setNeedsDisplay];
     }
@@ -68,11 +68,11 @@
     self.contentMode = UIViewContentModeRedraw;    
     [self addGestureRecognizer:[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinch:)]];
     [self addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)]];
-
+    
     UITapGestureRecognizer* tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
     tapRecognizer.numberOfTapsRequired = 3;
     [self addGestureRecognizer:tapRecognizer];
-
+    
     //initialize origin
     CGPoint midPoint;
     midPoint.x = self.bounds.origin.x + self.bounds.size.width/2;
@@ -112,7 +112,7 @@
         self.origin = [gesture locationInView:self];
     }
 }
-     
+
 - (void) awakeFromNib
 {
     [self setup];
@@ -127,28 +127,59 @@
     return self;
 }
 
++(UIColor*)getColorForProgramNumber:(int)programNumber
+{
+    UIColor *result = [UIColor blackColor];
+    switch(programNumber)
+    {
+        case 0:
+            result = [UIColor blueColor];       // 0.0, 0.0, 1.0 RGB 
+            break;
+        case 1:
+            result = [UIColor redColor];        // 1.0, 0.0, 0.0 RGB
+            break;
+        case 2:
+            result = [UIColor greenColor];      // 0.0, 1.0, 0.0 RGB 
+            break;
+        case 3:
+            result = [UIColor cyanColor];       // 0.0, 1.0, 1.0 RGB 
+            break;
+        case 4:
+            result = [UIColor yellowColor];     // 1.0, 1.0, 0.0 RGB 
+            break;
+        case 5:
+            result = [UIColor magentaColor];    // 1.0, 0.0, 1.0 RGB 
+            break;
+        case 6:
+            result = [UIColor orangeColor];     // 1.0, 0.5, 0.0 RGB 
+            break;
+        case 7:
+            result = [UIColor purpleColor];
+            break;
+            
+    }
+    return result;
+}
+
 //Text drawing method based on method from AxesDrawer
-+ (void)drawString:(NSString *)text atPoint:(CGPoint)location withAnchor:(int)anchor
++ (void)drawDescription:(NSString *)text atPoint:(CGPoint)location atlineNumber:(int)lineNumber
 {
 	if ([text length])
 	{
 		UIFont *font = [UIFont systemFontOfSize:HASH_MARK_FONT_SIZE];
-		
+        
 		CGRect textRect;
 		textRect.size = [text sizeWithFont:font];
         
-		textRect.origin.x = location.x - textRect.size.width / 2;
-		textRect.origin.y = location.y - textRect.size.height / 2;
+        textRect.origin.x = location.x;
+		textRect.origin.y = location.y + (textRect.size.height + VERTICAL_TEXT_MARGIN) * lineNumber ;
 		
-        textRect.origin = location;
-		switch (anchor) {
-			case ANCHOR_TOP: textRect.origin.y += textRect.size.height / 2 + VERTICAL_TEXT_MARGIN; break;
-			case ANCHOR_LEFT: textRect.origin.x += textRect.size.width / 2+ HORIZONTAL_TEXT_MARGIN; break;
-			case ANCHOR_BOTTOM: textRect.origin.y -= textRect.size.height / 2 + VERTICAL_TEXT_MARGIN; break;
-			case ANCHOR_RIGHT: textRect.origin.x -= textRect.size.width / 2+ HORIZONTAL_TEXT_MARGIN; break;
-		}
-		
+        [[self getColorForProgramNumber:lineNumber] setFill];
+        
 		[text drawInRect:textRect withFont:font];
+        
+        //reset draw color to black
+        [[UIColor blackColor] setFill];
 	}
 }
 
@@ -160,37 +191,45 @@
     [AxesDrawer drawAxesInRect:rect originAtPoint:self.origin scale:self.scale];
     
     //draw function    
-    CGContextBeginPath(context);
-    BOOL initialPointSet = NO;    
-    for(int x=0; x<rect.size.width; x++)
+    for (int programNumber=0; programNumber < [self.dataSource getProgramCount]; programNumber++)
     {
-        CGFloat y = [self.dataSource getYforX:((x-self.origin.x)/self.scale)];
-        //NSLog(@"gv call getYforX %g returned %g", ((x-self.origin.x)/self.scale), y);
-              
-        CGPoint nextPoint;
-        nextPoint.x  = x;
-        nextPoint.y = self.origin.y - y*self.scale;
-        
-        if(initialPointSet==YES)
+        CGContextBeginPath(context);
+        BOOL initialPointSet = NO;    
+        for(int x=0; x<rect.size.width; x++)
         {
-            CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+            CGFloat y = [self.dataSource getYforX:((x-self.origin.x)/self.scale) withProgramNumber:programNumber];
+            //NSLog(@"gv call getYforX %g returned %g", ((x-self.origin.x)/self.scale), y);
+            
+            CGPoint nextPoint;
+            nextPoint.x  = x;
+            nextPoint.y = self.origin.y - y*self.scale;
+            
+            if(initialPointSet==YES)
+            {
+                CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+            }
+            
+            CGContextMoveToPoint(context, nextPoint.x, nextPoint.y);
+            initialPointSet = YES;
         }
         
-        CGContextMoveToPoint(context, nextPoint.x, nextPoint.y);
-        initialPointSet = YES;
+        //set function line color
+        [[GraphView getColorForProgramNumber:programNumber] setStroke];
+        
+        CGContextStrokePath(context);
+        
+        //draw program description
+        NSString *programString = [self.dataSource getProgramDescription:self withProgramNumber:programNumber];
+        
+        //description location
+        CGPoint descriptionLocation = CGPointZero;
+        descriptionLocation.x += HORIZONTAL_TEXT_MARGIN;
+        descriptionLocation.y += VERTICAL_TEXT_MARGIN;
+        [GraphView drawDescription:programString atPoint:descriptionLocation atlineNumber:programNumber]; 
+        
+        //reset draw color to black
+        [[UIColor blackColor] setStroke];        
     }
-    
-    //draw function in blue
-    [[UIColor blueColor] setStroke];
-    CGContextStrokePath(context);
-    
-    //reset draw color to black
-    [[UIColor blackColor] setStroke];
-    
-    //draw program description
-    NSString *programString = [self.dataSource getProgramDescription:self];
-    
-    [GraphView drawString:programString atPoint:CGPointZero withAnchor:ANCHOR_TOP];     
 }
 
 @end

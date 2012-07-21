@@ -47,7 +47,7 @@
 {
     if([segue.identifier isEqualToString:@"Graph"])
     {
-        ((GraphViewController*)segue.destinationViewController).program = self.brain.program;
+        ((GraphViewController*)segue.destinationViewController).programs = [CalculatorBrain getAllPrograms:self.brain.program];
     }
 }
 
@@ -233,7 +233,7 @@
         if( [[self.splitViewController.viewControllers lastObject] isKindOfClass: [GraphViewController class]])
         {
             GraphViewController *graphViewController = [self.splitViewController.viewControllers lastObject];
-            graphViewController.program = self.brain.program;
+            graphViewController.programs = [CalculatorBrain getAllPrograms:self.brain.program];
             
         }
     }

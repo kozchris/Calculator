@@ -11,8 +11,9 @@
 @class GraphView;
 
 @protocol GraphViewDataSource <NSObject>
--(NSString*)getProgramDescription:(GraphView*) sender;
--(float)getYforX:(float) x;
+-(NSString*)getProgramDescription:(GraphView*) sender withProgramNumber:(int) programNumber;
+-(float)getYforX:(float) x withProgramNumber:(int) programNumber;
+-(int)getProgramCount;
 @end
 
 @interface GraphView : UIView
