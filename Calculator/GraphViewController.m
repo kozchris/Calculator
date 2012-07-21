@@ -88,7 +88,10 @@
             graphView.origin = origin;
         }
         
-        self.masterPopoverController = [[UIPopoverController alloc] initWithContentViewController:[self.splitViewController.viewControllers objectAtIndex:0]];
+        if (self.splitViewController)
+        {
+            self.masterPopoverController = [[UIPopoverController alloc] initWithContentViewController:[self.splitViewController.viewControllers objectAtIndex:0]];
+        }
     }
     
     [super viewDidLoad];
@@ -130,7 +133,7 @@
 
 - (void)splitViewController:(UISplitViewController *)svc 
      willShowViewController:(UIViewController *)aViewController 
-        invalidatingBarButtonItem:(UIBarButtonItem *)button
+  invalidatingBarButtonItem:(UIBarButtonItem *)button
 {
     NSMutableArray *toolbarItems = [self.toolbar.items mutableCopy];
     [toolbarItems removeObject:button];
