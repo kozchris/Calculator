@@ -226,7 +226,7 @@
     }
 }
 
-- (IBAction)Graph:(UIButton *)sender {
+- (IBAction)graph:(UIButton *)sender {
     if (self.splitViewController!=nil)
     {
         //detail view is always in position 1, master in position 0

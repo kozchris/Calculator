@@ -20,6 +20,7 @@
 		83A126C015B21AA60077D852 /* AxesDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A126BF15B21AA60077D852 /* AxesDrawer.m */; };
 		83A126C415B21BF50077D852 /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A126C315B21BF50077D852 /* GraphViewController.m */; };
 		83A126C715B21DD20077D852 /* GraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A126C615B21DD20077D852 /* GraphView.m */; };
+		83DFDDFA15C1F3E700AD559F /* FavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DFDDF915C1F3E700AD559F /* FavoritesTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,8 @@
 		83A126C315B21BF50077D852 /* GraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewController.m; sourceTree = "<group>"; };
 		83A126C515B21DD20077D852 /* GraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphView.h; sourceTree = "<group>"; };
 		83A126C615B21DD20077D852 /* GraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphView.m; sourceTree = "<group>"; };
+		83DFDDF815C1F3E700AD559F /* FavoritesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoritesTableViewController.h; sourceTree = "<group>"; };
+		83DFDDF915C1F3E700AD559F /* FavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoritesTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +108,8 @@
 				830AF475159D59E300D72D9E /* CalculatorBrain.m */,
 				830AF46C159D494600D72D9E /* CalculatorViewController.h */,
 				830AF46D159D494600D72D9E /* CalculatorViewController.m */,
+				83DFDDF815C1F3E700AD559F /* FavoritesTableViewController.h */,
+				83DFDDF915C1F3E700AD559F /* FavoritesTableViewController.m */,
 				830AF45E159D494600D72D9E /* Supporting Files */,
 			);
 			path = Calculator;
@@ -193,6 +198,7 @@
 				83A126C015B21AA60077D852 /* AxesDrawer.m in Sources */,
 				83A126C415B21BF50077D852 /* GraphViewController.m in Sources */,
 				83A126C715B21DD20077D852 /* GraphView.m in Sources */,
+				83DFDDFA15C1F3E700AD559F /* FavoritesTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

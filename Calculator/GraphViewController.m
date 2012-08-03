@@ -9,8 +9,9 @@
 #import "GraphViewController.h"
 #import "GraphView.h"
 #import "CalculatorBrain.h"
+#import "FavoritesTableViewController.h"
 
-@interface GraphViewController () <GraphViewDataSource>
+@interface GraphViewController () <GraphViewDataSource, FavoritesTableViewControllerDelegate>
 @property (nonatomic, weak) IBOutlet GraphView *graphView;
 @end
 
@@ -21,6 +22,15 @@
 @synthesize masterPopoverController = _masterPopoverController;
 @synthesize toolbar = _toolbar;
 @synthesize drawingModeSwitch = _drawingModeSwitch;
+
+-(NSArray*)programs
+{
+    if (!_programs)
+    {
+        return [NSArray array];
+    }
+    return _programs;
+}
 
 -(void) setPrograms:(NSArray *)programs
 {
@@ -159,6 +169,73 @@
     [toolbarItems removeObject:button];
     self.toolbar.items = toolbarItems;
     self.masterPopoverController = nil;
+}
+
+#define FAVORITES_KEY @"CalculatorGraphViewController.Favorites"
+
+- (IBAction)addToFavorites:(UIButton *)sender {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *favorites = [[defaults objectForKey:FAVORITES_KEY] mutableCopy];
+    if (!favorites)
+    {
+        favorites = [NSMutableArray array];
+    }
+    
+    //add all programs being displayed to favorites
+    for (int programNumber = 0; programNumber<self.programs.count;programNumber++) {
+        [favorites addObject:[self.programs objectAtIndex:programNumber]];
+    }
+    
+    [defaults setObject:favorites forKey:FAVORITES_KEY];
+    
+    [defaults synchronize];
+}
+
+- (NSArray*)removeProgramFromFavorites:(id)program {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *favorites = [[defaults objectForKey:FAVORITES_KEY] mutableCopy];
+    if (!favorites)
+    {
+        favorites = [NSMutableArray array];
+    }
+    
+    [favorites removeObjectIdenticalTo:program];
+    
+    [defaults setObject:favorites forKey:FAVORITES_KEY];
+    
+    [defaults synchronize];
+    
+    return favorites;
+}
+
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"Show Favorite Graphs"])
+    {
+        NSArray *programs = [[NSUserDefaults standardUserDefaults] objectForKey:FAVORITES_KEY];
+        [segue.destinationViewController setPrograms: programs];
+        [segue.destinationViewController setDelegate:self];
+    }
+}
+
+-(void) favoritesTableViewController:(FavoritesTableViewController*)sender choseProgram:(id)program
+{
+    NSMutableArray *tPrograms = [self.programs mutableCopy];
+    [tPrograms addObject:program];
+    self.programs = tPrograms ;
+    
+    
+    // if you wanted to close the popover when a graph was selected
+    // you could uncomment the following line
+    // you'd probably want to set self.popoverController = nil after doing so
+    // [self.popoverController dismissPopoverAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void) favoritesTableViewController:(FavoritesTableViewController *)sender deletedProgram:(id)program
+{
+    sender.programs = [self removeProgramFromFavorites:program];     
 }
 
 - (void)viewDidUnload {
