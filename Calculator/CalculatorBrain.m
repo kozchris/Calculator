@@ -514,4 +514,42 @@ typedef enum enumOperatorType { kOperator, kVariable, kFunction, kConstant } enu
     return [result copy];
 }
 
++ (BOOL) program:(id)program equalToProgram:(id)program2
+{
+    BOOL ret = NO;
+    
+    NSArray *p1, *p2;
+    if ([program isKindOfClass:[NSArray class]])
+    {
+        p1 = program;
+    }
+    
+    if ([program2 isKindOfClass:[NSArray class]])
+    {
+        p2 = program2;
+    }
+    
+    if (p1==nil && p2==nil)
+    {
+        ret = YES;
+    }
+    else if (p1 != nil && p2 != nil && p1.count == p2.count)
+    {
+        int i=0;
+        for(; i<p1.count; i++)
+        {
+            if ([p1 objectAtIndex:i] != [p2 objectAtIndex:i])
+            {
+                break;
+            }
+        }
+        if (i==p1.count)
+        {
+            ret = YES;
+        }
+    }
+    
+    return ret;
+}
+
 @end

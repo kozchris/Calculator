@@ -50,4 +50,7 @@
 //get array of all programs in brain
 + (NSArray *) getAllPrograms:(id)program;
 
+//determine if 2 programs are identically structured
++ (BOOL) program:(id)program equalToProgram:(id)program2;
+
 @end

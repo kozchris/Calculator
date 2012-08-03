@@ -59,12 +59,12 @@
 
 -(float) getYforX:(float)x withProgramNumber:(int) programNumber
 {
-    NSDictionary *vars = [NSDictionary dictionaryWithObjectsAndKeys:[NSDecimalNumber numberWithFloat:x], @"x", nil]; 
+    NSDictionary *vars = [NSDictionary dictionaryWithObjectsAndKeys:[NSDecimalNumber numberWithFloat:x], @"x", nil];
     return [CalculatorBrain runProgram:[self.programs objectAtIndex:programNumber] usingVariableValues:vars];
 }
 
 -(enumDrawingMode)getDrawingMode
-{    
+{
     if(!self.drawingModeSwitch.isOn )
     {
         return (enumDrawingMode)kDot;
@@ -113,7 +113,7 @@
         
         if ([defaults objectForKey:@"origin.x"] != nil)
         {
-            CGPoint origin;        
+            CGPoint origin;
             origin.x = [defaults floatForKey:@"origin.x"];
             origin.y = [defaults floatForKey:@"origin.y"];
             graphView.origin = origin;
@@ -147,9 +147,9 @@
     [super viewWillDisappear:animated];
 }
 
-- (void)splitViewController:(UISplitViewController *)svc 
-     willHideViewController:(UIViewController *)aViewController 
-          withBarButtonItem:(UIBarButtonItem *)barButtonItem 
+- (void)splitViewController:(UISplitViewController *)svc
+     willHideViewController:(UIViewController *)aViewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
        forPopoverController:(UIPopoverController *)pc
 {
     barButtonItem.title = @"Calculator";
@@ -161,8 +161,8 @@
     self.masterPopoverController = pc;
 }
 
-- (void)splitViewController:(UISplitViewController *)svc 
-     willShowViewController:(UIViewController *)aViewController 
+- (void)splitViewController:(UISplitViewController *)svc
+     willShowViewController:(UIViewController *)aViewController
   invalidatingBarButtonItem:(UIBarButtonItem *)button
 {
     NSMutableArray *toolbarItems = [self.toolbar.items mutableCopy];
@@ -183,7 +183,21 @@
     
     //add all programs being displayed to favorites
     for (int programNumber = 0; programNumber<self.programs.count;programNumber++) {
-        [favorites addObject:[self.programs objectAtIndex:programNumber]];
+     
+        //do not add duplicates
+        BOOL addProgram = YES;
+        for (id savedProgram in favorites) {
+            if ([CalculatorBrain program:savedProgram equalToProgram:[self.programs objectAtIndex:programNumber]])
+            {
+                addProgram = NO;
+                break;
+            }
+        }
+        
+        if (addProgram)
+        {
+            [favorites addObject:[self.programs objectAtIndex:programNumber]];
+        }
     }
     
     [defaults setObject:favorites forKey:FAVORITES_KEY];
@@ -225,7 +239,6 @@
     [tPrograms addObject:program];
     self.programs = tPrograms ;
     
-    
     // if you wanted to close the popover when a graph was selected
     // you could uncomment the following line
     // you'd probably want to set self.popoverController = nil after doing so
@@ -235,7 +248,7 @@
 
 -(void) favoritesTableViewController:(FavoritesTableViewController *)sender deletedProgram:(id)program
 {
-    sender.programs = [self removeProgramFromFavorites:program];     
+    sender.programs = [self removeProgramFromFavorites:program];
 }
 
 - (void)viewDidUnload {
